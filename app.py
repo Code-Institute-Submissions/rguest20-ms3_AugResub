@@ -22,9 +22,8 @@ migrate = Migrate(app,db)
 
 @manager.command
 def deploy():
-"""Run deployment tasks."""
 # migrate database to latest revision
-upgrade()
+    upgrade()
 
 #Database Classes
 class Role(db.Model):
