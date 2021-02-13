@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+
+{% block title %}Search{% endblock %}
+
+{% block page_content %}
+<div class="vertical-center">
+  <div class="jumbotron login">
+    <h3>Search Our Database</h3>
+    <small>Bringing Companies and Freelancers Together</small>
+    <ul class="nav nav-tabs">
+      <li class="active"><a data-toggle="tab" href="#home">Jobs</a></li>
+      <li><a data-toggle="tab" href="#menu1">Freelancers</a></li>
+      <li><a data-toggle="tab" href="#menu2">Companies</a></li>
+    </ul>
+
+    <div class="tab-content">
+      <div id="home" class="tab-pane fade in active">
+        <h3>Job Search</h3>
+        <form method="POST" action="/search/results">
+          {{ job.hidden_tag() }}
+          <p>{{ job.term.label }} {{ job.term(id='searchterm') }}</p>
+          <p>{{ job.searchfield.label }} {{job.searchfield(id="searchterms") }}</p>
+          {{ job.submit() }}
+        </form>
+      </div>
+      <div id="menu1" class="tab-pane fade">
+        <h3>Freelancer Search</h3>
+        <form method="POST" action="/search/results">
+          {{ freelancer.hidden_tag() }}
+          <p>{{ freelancer.term.label }} {{ freelancer.term(id='searchterm') }}</p>
+          <p>{{ freelancer.searchfield.label }} {{freelancer.searchfield(id="searchterms") }}</p>
+          {{ freelancer.submit() }}
+        </form>
+      </div>
+      <div id="menu2" class="tab-pane fade">
+        <h3>Company Search</h3>
+        <form method="POST" action="/search/results">
+          {{ company.hidden_tag() }}
+          <p>{{ company.term.label }} {{ company.term(id='searchterm') }}</p>
+          <p>{{ company.searchfield.label }} {{company.searchfield(id="searchterms") }}</p>
+          {{ company.submit() }}
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

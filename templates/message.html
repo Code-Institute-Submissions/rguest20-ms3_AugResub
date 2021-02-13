@@ -4,19 +4,76 @@
 
 {% block page_content %}
 <h1>Messages</h1>
-<h3>Sent</h3>
-<div class="jumbotron">
-  {% for message in user.messages %}
-  <div class="message jumbotron">
-    <h4>From {{ message.sender.id }} - {{ message.sender.username }} to {{ message.recipient }}</h4>
-    <h4>{{ message.title }}</h4>
-    <p>{{ message.message }}</p>
+<ul class="nav nav-tabs">
+  <li class="active"><a data-toggle="tab" href="#home">Home</a></li>
+  <li><a data-toggle="tab" href="#menu1">Sent</a></li>
+  <li><a data-toggle="tab" href="#menu2">Recieved</a></li>
+</ul>
+
+<div class="tab-content">
+  <div id="home" class="tab-pane fade in active">
+    <h3>Your Messages</h3>
+    <p>This is where you can send or recieve messages from other members of the community. We hope you find a lot of work quickly!</p>
+    <p><strong>GOOD LUCK</strong></p>
   </div>
-  <p> </p>
-  {% endfor %}
-  <h3>Send a new message</h3>
-  <form class="message_compose" action="/messages/compose" method="post">
-    <button type="submit" name="compose">Compose</button>
-  </form>
+  <div id="menu1" class="tab-pane fade">
+    <h3>Send a new message</h3>
+    <form class="message_compose" action="/messages/compose" method="post">
+      <button type="submit" name="compose">Compose</button>
+    </form>
+    <h3>Sent</h3>
+    {% if scount == 0 %}
+    <p>You haven't sent any messages yet. Care to <a href="/search">search</a> for your next freelance job?</p>
+    {% endif %}
+    {% for message in messages_sent %}
+    {% if message.sender_deleted == False %}
+    <div class="message jumbotron">
+      <h4>From {{ message.sender.owners[0].username }} to {{ message.recipient.owners[0].username }}</h4>
+      <hr>
+      <h4><strong>{{ message.title }}</strong></h4>
+      <p>{{ message.message }}</p>
+      <div class="reply">
+        <form class="" action="/message/delete/sender" method="post">
+          <input type="text" name="message_id" value="{{ message.id }}" hidden>
+          <button type="submit" name="delete">Delete</button>
+        </form>
+        <form class="" action="/message/reply" method="post">
+          <input type="text" name="send" value="true" hidden>
+          <input type="text" name="message_id" value="{{ message.id }}" hidden>
+          <button type="submit" name="button">Continue Correspondence</button>
+        </form>
+      </div>
+    </div>
+    <p> </p>
+    {% endif %}
+    {% endfor %}
+  </div>
+  <div id="menu2" class="tab-pane fade">
+    <h3>Recieved</h3>
+    {% if rcount == 0 %}
+    <p>No messages here, sorry. Check back later, and we'll see what we have for you.</p>
+    {% endif %}
+    {% for message in messages_recieved %}
+    {% if message.reciever_deleted == False %}
+    <div class="message jumbotron">
+      <h4>From {{ message.sender.owners[0].username }} to {{ message.recipient.owners[0].username }}</h4>
+      <hr>
+      <h4><strong>{{ message.title }}</strong></h4>
+      <p>{{ message.message }}</p>
+      <div class="reply">
+        <form class="" action="/message/delete/reciever" method="post">
+          <input type="text" name="message_id" value="{{ message.id }}" hidden>
+          <button type="submit" name="delete">Delete</button>
+        </form>
+        <form class="" action="/message/reply" method="post">
+          <input type="text" name="send" value="false" hidden>
+          <input type="text" name="message_id" value="{{ message.id }}" hidden>
+          <button type="submit" name="button">Reply</button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+    {% endfor %}
+  </div>
 </div>
 {% endblock %}

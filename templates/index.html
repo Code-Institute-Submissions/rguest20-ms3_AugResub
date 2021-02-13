@@ -3,22 +3,95 @@
 {% block title %}Project FREElance{% endblock %}
 
 {% block page_content %}
-<h1>{% if name %}Hello, {{ name }}{% else %}Hello, stranger...{% endif %}!</h1>
-{% if not known %}
-<p>Nice to meet you! Care to login?</p>
-{% else %}
-<p>Welcome back!</p>
-{% endif %}
 {% if name %}
-<form class="logout" action="/logout" method="post">
-  <button type="submit" name="Logout">Logout</button>
-</form>
-<h3>This is your homepage</h3>
+{% if user[0].role.name =='Company' %}
+<div class="hero_company">
+  {% elif user[0].role.name == 'Administrator' %}
+  <div class="hero_admin">
+    {% else %}
+    <div class="hero">
+      {% endif %}
+      {% else %}
+      <div class="hero">
+        {% endif %}
+        <div class="welcome jumbotron">
+          <h1>{% if name %}Hello, {{ name }}{% else %}Hello, stranger...{% endif %}!</h1>
+          {% if not known %}
+          <p>Nice to meet you! Care to login?</p>
+          {% else %}
+          <p>Welcome back!</p>
+          {% endif %}
+          {% if name %}
+          {% if user[0].role.name == 'Administrator' %}
+          <form class="logout" action="/logout" method="post">
+            <button type="submit" name="Logout">Logout</button>
+          </form>
+        </div>
+      </div>
+      <div class="homepage">
+        <h3>This is your admin homepage</h3>
+      </div>
+      {% elif user[0].role.name == "Company" %}
+      <form class="logout" action="/logout" method="post">
+        <button type="submit" name="Logout">Logout</button>
+      </form>
+    </div>
+  </div>
+  <div class="homepage">
+    <h3>This is your Company homepage</h3>
+    <p>
+      <strong>Connect with the best freelancers </strong>
+      <br>
+      <small>(and not get charged for the privilege!!!)</small>
+    </p>
+
+    <div class="jumbotron jobpostjumbo">
+      <h3>Posts on your board</h3>
+      <form class="btn right_button1 job_posting" action="/jobpost" method="post">
+        <button type="submit" name="post_job">Post Job</button>
+      </form>
+      <br>
+      <form class="btn right_button2 search_freelancers" action="/search" method="get">
+        <button type="submit" name="search_freelancers">Search Freelancer Talent</button>
+      </form>
+      {% for post in posts %}
+      <div class="jumbotron message">
+        <h4><strong>{{ post.title }}</strong></h4>
+        <p><small>Posted by {{ post.poster.username }}</small></p>
+        <hr>
+        <p>{{ post.description }}</p>
+        <p>{% if post.budget %}Budget: £{% endif %}{{ post.budget }}</p>
+        <p>{% if post.hourlypay %}Hourly rate: £{% endif %}{{ post.hourlypay }}</p>
+        <form class="check_respondants" action="jobpost/check" method="post">
+          <input type="text" name="post_number" value="{{ post.id }}" hidden>
+          <button type="submit">Check Responses</button>
+        </form>
+        <form class="delete_posting" action="jobpost/delete" method="post">
+          <input type="text" name="post_number" value="{{ post.id }}" hidden>
+          <button type="submit">Delete Post</button>
+        </form>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  {% else %}
+  <form class="logout" action="/logout" method="post">
+    <button type="submit" name="Logout">Logout</button>
+  </form>
+</div>
+<div class="homepage">
+  <h3>This is your Freelancer homepage</h3>
+</div>
+{% endif %}
 {% else %}
 <form class="form" action="/login" method="POST">
   <button type="submit" name="Login">Login</button>
 </form>
 <p><small><a href="/register">Click here to register</a></small></p>
-<h3>Generic Homepage</h3>
+</div>
+</div>
+<div class="homepage">
+  <h3>Generic Homepage</h3>
+</div>
 {% endif %}
 {% endblock %}

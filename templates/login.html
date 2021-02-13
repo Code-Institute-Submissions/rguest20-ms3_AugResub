@@ -3,11 +3,15 @@
 {% block title %}Project FREElance{% endblock %}
 
 {% block page_content %}
-<h3>Please Login To Continue</h3>
-<form method="POST">
-  {{ form.hidden_tag() }}
-  <p>{{ form.name.label }} {{ form.name(id='my-text-field') }}</p>
-  <p>{{ form.password.label }} {{form.password(id="text-field-two") }}</p>
-  {{ form.submit() }}
-</form>
+<div class="vertical-center">
+  <div class="jumbotron login">
+    <h3>Please Login To Continue</h3>
+    <form method="POST">
+      {{ form.hidden_tag() }}
+      <p>{{ form.name.label }} {{ form.name(id='my-text-field') }}</p>
+      <p>{{ form.password.label }} {{form.password(id="text-field-two") }}</p>
+      {{ form.submit() }}
+    </form>
+  </div>
+</div>
 {% endblock %}

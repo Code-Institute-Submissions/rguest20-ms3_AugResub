@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block page_content %}
+<h1>Post A New Job!</h1>
+<p><small>Your brand new talent is but a few clicks away!</small></p>
+<div class="jumbotron">
+  <h3>Job Posting</h3>
+  <form class="job_post_form" action="/jobpost/post" method="post">
+    {{ form.title.label }}<br>{{ form.title }}
+    <br>
+    {{ form.description.label }}<br>{{ form.description(rows=10) }}
+    <br>
+    {{ form.budget.label }}<br>£{{ form.budget }}
+    <br>
+    {{ form.hourlypay.label }}<br>£{{ form.hourlypay }}
+    <br>
+    <br>
+    {{ form.submit }}
+  </form>
+</div>
+{% endblock %}

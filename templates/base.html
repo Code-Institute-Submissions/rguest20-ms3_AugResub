@@ -3,7 +3,10 @@
 <title>{% block title %}{% endblock %}</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link href="//cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet">
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-beta.1/dist/css/select2.min.css" rel="stylesheet" />
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+<link rel="preconnect" href="https://fonts.gstatic.com">
+<link href="https://fonts.googleapis.com/css2?family=Changa:wght@200;300;400;500;600;700;800&display=swap" rel="stylesheet">
 {% endblock %}
 {% block navbar %}
 <nav>
@@ -21,11 +24,10 @@
       <div class="navbar-collapse collapse">
         <ul class="nav navbar-nav">
           <li><a href="{{ url_for('index') }}">Home</a></li>
-          <li><a href="{{ url_for('about') }}">About</a></li>
-          <li><a href="{{ url_for('contact') }}">Contact</a></li>
+          <li><a href="{{ url_for('search') }}">Search</a></li>
           {% if name %}
-          <li><a href="#">Search</a></li>
           <li><a href="{{ url_for('message') }}">Messages</a></li>
+          <li><a href="{{ url_for('account') }}">Account</a></li>
           <li><a href="{{ url_for('logout') }}">Log Out</a></li>
           {% else %}
           <li><a href="{{ url_for('register') }}">Register</a></li>
@@ -48,7 +50,14 @@
   {% block page_content %}{% endblock %}
 </div>
 <div class="container footer">
-  <hr>
-  <h3>Footer</h3>
+  <div class="footer_left">
+    <p><a href="/about">About</a></p>
+  </div>
+  <div class="footer_center">
+    <p><a href="/contact">Contact</a></p>
+  </div>
+  <div class="footer_right">
+    <p>placeholder</p>
+  </div>
 </div>
 {% endblock %}

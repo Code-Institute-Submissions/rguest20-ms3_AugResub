@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block page_content %}
+<h1>Messages</h1>
+{% if correspondence == "false" %}
+<h3>Reply to message</h3>
+{% else %}
+<h3>Correspondence</h3>
+{% endif %}
+<div class="jumbotron">
+  <div class="message jumbotron">
+    <hr>
+    <h2>Previous message - {{ message.sender.name }} to {{ message.recipient.name }}</h2>
+    <hr>
+    <h3><strong>{{ message.title }}</strong></h3>
+    <p>{{ message.message }}</p>
+    <hr>
+    <h2>Your Message</h2>
+    <hr>
+    <form class="WriteMessage" action="/message/send" method="post">
+      {{ form.hidden_tag() }}
+      {% if correspondence =="false" %}
+      <input type="text" name="recipient" value="{{ message.sender.name }}" hidden>
+      {% else %}
+      <input type="text" name="recipient" value="{{ message.recipient.name }}" hidden>
+      {% endif %}
+      <label for="title">
+        <h3>
+          <strong>
+            Title:
+          </strong>
+        </h3>
+      </label>
+      <input type="text" name="title" value="{{ message.title }} Cont." readonly>
+      <p>{{ form.message.label }} {{form.message(id="message") }}</p>
+      {{ form.submit() }}
+    </form>
+  </div>
+  <p> </p>
+</div>
+{% endblock %}
