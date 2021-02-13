@@ -1,1 +1,1 @@
-app.py
+execfile('file.py')
