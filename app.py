@@ -20,11 +20,6 @@ app.config['SECRET_KEY'] = 'very hard to guess string'
 bootstrap = Bootstrap(app)
 migrate = Migrate(app,db)
 
-@manager.command
-def deploy():
-# migrate database to latest revision
-    upgrade()
-
 #Database Classes
 class Role(db.Model):
     __tablename__="roles"
