@@ -4,9 +4,9 @@
 
 {% block page_content %}
 {% if name %}
-{% if user[0].role.name =='Company' %}
+{% if user.role =='Company' %}
 <div class="hero_company">
-  {% elif user[0].role.name == 'Administrator' %}
+  {% elif user.role == 'Administrator' %}
   <div class="hero_admin">
     {% else %}
     <div class="hero">
@@ -22,7 +22,7 @@
           <p>Welcome back!</p>
           {% endif %}
           {% if name %}
-          {% if user[0].role.name == 'Administrator' %}
+          {% if user.role == 'Administrator' %}
           <form class="logout" action="/logout" method="post">
             <button type="submit" name="Logout">Logout</button>
           </form>
@@ -31,7 +31,7 @@
       <div class="homepage">
         <h3>This is your admin homepage</h3>
       </div>
-      {% elif user[0].role.name == "Company" %}
+      {% elif user.role == "Company" %}
       <form class="logout" action="/logout" method="post">
         <button type="submit" name="Logout">Logout</button>
       </form>
@@ -57,7 +57,7 @@
       {% for post in posts %}
       <div class="jumbotron message">
         <h4><strong>{{ post.title }}</strong></h4>
-        <p><small>Posted by {{ post.poster.username }}</small></p>
+        <p><small>Posted by {{ post.poster }}</small></p>
         <hr>
         <p>{{ post.description }}</p>
         <p>{% if post.budget %}Budget: £{% endif %}{{ post.budget }}</p>

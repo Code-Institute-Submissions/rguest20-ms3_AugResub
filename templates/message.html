@@ -28,13 +28,13 @@
     {% for message in messages_sent %}
     {% if message.sender_deleted == False %}
     <div class="message jumbotron">
-      <h4>From {{ message.sender.owners[0].username }} to {{ message.recipient.owners[0].username }}</h4>
+      <h4>From {{ message.sender }} to {{ message.recipient }}</h4>
       <hr>
       <h4><strong>{{ message.title }}</strong></h4>
       <p>{{ message.message }}</p>
       <div class="reply">
         <form class="" action="/message/delete/sender" method="post">
-          <input type="text" name="message_id" value="{{ message.id }}" hidden>
+          <input type="text" name="message_id" value="{{ message.id }}">
           <button type="submit" name="delete">Delete</button>
         </form>
         <form class="" action="/message/reply" method="post">
@@ -53,16 +53,16 @@
     {% if rcount == 0 %}
     <p>No messages here, sorry. Check back later, and we'll see what we have for you.</p>
     {% endif %}
-    {% for message in messages_recieved %}
-    {% if message.reciever_deleted == False %}
+    {% for message in messages_received %}
+    {% if message.receiver_deleted == False %}
     <div class="message jumbotron">
-      <h4>From {{ message.sender.owners[0].username }} to {{ message.recipient.owners[0].username }}</h4>
+      <h4>From {{ message.sender }} to {{ message.recipient }}</h4>
       <hr>
       <h4><strong>{{ message.title }}</strong></h4>
       <p>{{ message.message }}</p>
       <div class="reply">
-        <form class="" action="/message/delete/reciever" method="post">
-          <input type="text" name="message_id" value="{{ message.id }}" hidden>
+        <form class="" action="/message/delete/receiver" method="post">
+          <input type="text" name="message_id" value="{{ message.id }}">
           <button type="submit" name="delete">Delete</button>
         </form>
         <form class="" action="/message/reply" method="post">

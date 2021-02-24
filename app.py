@@ -5,41 +5,37 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange
-from flask_sqlalchemy import SQLAlchemy
+from flask_mongoengine import MongoEngine
 from flask_migrate import Migrate
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import *
+from dateutil.relativedelta import *
+import calendar
 import os
 
 # Configuration
 basedir= os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + os.path.join(basedir, 'data.sqlite')
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-db = SQLAlchemy(app)
+app.config['MONGODB_SETTINGS']={
+    'db': 'freelance',
+    'host': os.environ.get('MONGO_LOGIN'),
+    'port': 27017,
+    'username': 'admin',
+    'password': 'Glnayr86'
+}
 app.config['SECRET_KEY'] = 'very hard to guess string'
+db = MongoEngine()
+db.init_app(app)
 bootstrap = Bootstrap(app)
 migrate = Migrate(app,db)
 
 #Database Classes
-class Role(db.Model):
-    __tablename__="roles"
-    id= db.Column(db.Integer, primary_key = True)
-    name = db.Column(db.String(64), unique = True)
-    users = db.relationship('User', backref = 'role')
-
-    def __repr__(self):
-        return '<Role %r>' % self.name
-
-class User(db.Model):
-    __tablename__="users"
-    id= db.Column(db.Integer, primary_key = True)
-    username = db.Column(db.String(64), unique = True, index = True)
-    password_hash = db.Column(db.String(128))
-    role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
-    date_joined = db.Column(db.Date)
-    inbox_id = db.Column(db.Integer, db.ForeignKey('inbox.id'))
-    outbox_id = db.Column(db.Integer, db.ForeignKey('outbox.id'))
-    posts = db.relationship("JobPost", backref="poster")
+class User(db.DynamicDocument):
+    username = db.StringField()
+    password_hash = db.StringField()
+    role = db.StringField()
+    date_joined = db.DateField()
+    posts = db.ReferenceField('JobPost')
 
     @property
     def password(self):
@@ -52,56 +48,51 @@ class User(db.Model):
     def verify_password(self, password):
         return check_password_hash(self.password_hash, password)
 
-    def __repr__(self):
-        return '<User %r>' % self.username
+    def to_json(self):
+        return {
+        'username': self.username,
+        'password_hash': self.password_hash,
+        'role': self.role,
+        'date_joined': self.date_joined,
+        'posts': self.posts
+        }
 
+class Message(db.DynamicDocument):
+    sender = db.StringField()
+    recipient = db.StringField()
+    read_yn = db.BooleanField()
+    sender_deleted = db.BooleanField()
+    receiver_deleted = db.BooleanField()
+    date = db.DateField()
+    title = db.StringField()
+    message = db.StringField()
 
-class Inbox(db.Model):
-    __tablename__="inbox"
-    id= db.Column(db.Integer, primary_key = True)
-    name=db.Column(db.String(50))
-    owners=db.relationship("User", backref="inbox")
-    recieved_messages=db.relationship("Message", backref = "recipient")
+    def to_json(self):
+        return {
+        'sender': self.sender,
+        'recipient': self.recipient,
+        'read_yn': self.read_yn,
+        'sender_deleted': self.sender_deleted,
+        'receiver_deleted': self.receiver_deleted,
+        'date': self.date,
+        'title': self.title,
+        'message': self.message}
 
-    def __repr__(self):
-        return '<Inbox %r>' % self.id
+class JobPost(db.DynamicDocument):
+    poster = db.StringField()
+    title= db.StringField()
+    description = db.StringField()
+    budget = db.StringField()
+    hourlypay = db.StringField()
 
-class Outbox(db.Model):
-    __tablename__="outbox"
-    id = db.Column(db.Integer, primary_key = True)
-    name=db.Column(db.String(50))
-    owners=db.relationship("User", backref="outbox")
-    sent_messages=db.relationship("Message", backref = "sender")
-
-    def __repr__(self):
-        return '<Outbox %r>' % self.id
-
-class Message(db.Model):
-    __tablename__="messages"
-    id= db.Column(db.Integer, primary_key = True)
-    sender_id = db.Column(db.Integer, db.ForeignKey('outbox.id'))
-    recipient_id = db.Column(db.Integer, db.ForeignKey('inbox.id'))
-    read_yn = db.Column(db.Boolean)
-    sender_deleted = db.Column(db.Boolean)
-    reciever_deleted = db.Column(db.Boolean)
-    date = db.Column(db.DateTime)
-    title = db.Column(db.String(100))
-    message = db.Column(db.String(500))
-
-    def __repr__(self):
-        return '<Message %r>' % self.title
-
-class JobPost(db.Model):
-    __tablename__="posts"
-    id=db.Column(db.Integer, primary_key=True)
-    poster_id = db.Column(db.Integer, db.ForeignKey('users.id'))
-    title= db.Column(db.String(100))
-    description = db.Column(db.String(500))
-    budget = db.Column(db.String(10))
-    hourlypay = db.Column(db.String(10))
-
-    def __repr__(self):
-        return '<Post %r>' % self.title
+    def to_json(self):
+        return {
+        'poster_id': self.poster_id,
+        'title': self.title,
+        'description': self.description,
+        'budget': self.budget,
+        'hourlypay': self.hourlypay
+        }
 
 #Form Classes
 class NameForm(FlaskForm):
@@ -150,22 +141,22 @@ class CompanySearchForm(FlaskForm):
 #Python Shell
 @app.shell_context_processor
 def make_shell_context():
-    return dict(db=db, User=User, Role=Role, Message=Message, Inbox=Inbox, Outbox=Outbox, JobPost=JobPost)
+    return dict(db=db, User=User, Message=Message, JobPost=JobPost)
 
 #Routing
 @app.route("/", methods=['GET', 'POST'])
 def index():
-    try: current_user=User.query.filter_by(username=session['name'])
+    try: current_user=User.objects(username=session['name']).first()
     except KeyError:
         session['name'] = None
         current_user = None
     form = NameForm()
     if session['name'] != None:
-        posts = current_user[0].posts
+        posts = JobPost.objects(poster=session['name'])
     else:
         posts = []
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.name.data).first()
+        user = User.objects(username=form.name.data).first()
         if user == None:
             flash("Username not found")
         else:
@@ -188,7 +179,7 @@ def login():
     else:
         form = NameForm()
         if form.validate_on_submit():
-            user = User.query.filter_by(username=form.name.data).first()
+            user = User.objects(username=form.name.data).first()
             if user == None:
                 flash("Username not found")
             else:
@@ -209,21 +200,13 @@ def register():
     if session['name'] == None:
         form = RegisterForm()
         if form.validate_on_submit():
-            users = User.query.filter_by(username=form.username.data).first()
+            users = User.objects(username=form.username.data).first()
             try: user_registered = users[0].username
             except TypeError: user_registered = None
             if user_registered == form.username.data:
                 flash("Username already exists")
             else:
-                new_inbox=Inbox(name=form.username.data)
-                db.session.add(new_inbox)
-                db.session.commit()
-                new_outbox=Outbox(name=form.username.data)
-                db.session.add(new_outbox)
-                db.session.commit()
-                new_user=User(username=form.username.data, password=form.password.data, inbox=new_inbox, outbox=new_outbox)
-                db.session.add(new_user)
-                db.session.commit()
+                User(username=form.username.data, password_hash=generate_password_hash(form.password.data), role="freelancer", date=datetime.utcnow()).save()
                 session['name']=form.username.data
                 session['known'] = True
                 return redirect(url_for('index'))
@@ -236,12 +219,11 @@ def account():
     try: session['name']
     except KeyError: session['name'] = None
     if session['name'] != None:
-        user=User.query.filter_by(username=session['name']).first()
+        user=User.objects(username=session['name']).first()
         form=ChangeUserTypeForm()
         if form.validate_on_submit():
-            new_role=Role.query.filter_by(name=request.values.get('new_type')).first()
-            user.role = new_role
-            db.session.commit()
+            new_role = request.values.get('new_type')
+            user.update(role=new_role)
         return render_template('account.html', name=session['name'], form=form, user=user)
     else:
         return redirect(url_for('register'))
@@ -257,26 +239,26 @@ def message():
     try: session['name']
     except KeyError: session['name'] = None
     if session['name'] != None:
-        user = User.query.filter_by(username=session['name']).first()
-        messages_recieved = user.inbox.recieved_messages
+        user = User.objects(username=session['name']).first()
+        messages_received = Message.objects(recipient=session['name'])
         rcount = []
-        for message in messages_recieved:
-            if message.reciever_deleted == False:
+        for message in messages_received:
+            if message.receiver_deleted == False:
                 rcount.append(message)
-        recieved_count = len(rcount)
-        messages_sent = user.outbox.sent_messages
+        received_count = len(rcount)
+        messages_sent = Message.objects(sender=session['name'])
         scount = []
         for message in messages_sent:
             if message.sender_deleted == False:
                 scount.append(message)
         sent_count=len(scount)
-        return render_template('message.html', name=session['name'], messages_recieved=messages_recieved, rcount=recieved_count, scount= sent_count, messages_sent = messages_sent)
+        return render_template('message.html', name=session['name'], messages_received=messages_received, rcount=received_count, scount= sent_count, messages_sent = messages_sent)
     else:
         return redirect(url_for('register'))
 
 @app.route('/userlist')
 def user_list():
-    list=User.query.all()
+    list=User.objects()
     message = []
     for user in list:
         message.append(user.username)
@@ -287,42 +269,36 @@ def compose_message():
     try: session['name']
     except KeyError: session['name'] = None
     if session['name'] != None:
-        user = User.query.filter_by(username=session['name']).first()
+        user = User.objects(username=session['name']).first()
         form=ComposeMessageForm()
         if form.validate_on_submit():
             send_to=form.send_to.data
             send_to_exist= True
-            send_to_exist_checker = User.query.filter_by(username=send_to).first()
-            send_to_user = Inbox.query.filter_by(name=send_to).first()
-            try: send_to = send_to_exist_checker.username
-            except AttributeError: send_to_exist = False
+            send_to_exist_checker = User.objects(username=send_to).first()
+            if len(send_to_exist_checker) < 1:
+                send_to_exist = False
             send_from=session['name']
-            send_from_id=Outbox.query.filter_by(name=send_from).first()
             title=form.title.data
             message=form.message.data
             if send_to_exist == False:
                 flash("This username is not valid")
             else:
-                message_to_send=Message(sender=send_from_id, recipient=send_to_user, title=title, message=message, read_yn=False, sender_deleted=False, reciever_deleted=False)
-                db.session.add(message_to_send)
-                db.session.commit()
+                message_to_send=Message(sender=send_from, recipient=send_to, title=title, message=message, read_yn=False, sender_deleted=False, receiver_deleted=False, date=datetime.utcnow()).save()
                 return redirect(url_for('message'))
         return render_template('messagecompose.html', name=session['name'], user=user, form=form)
     else:
         return redirect(url_for('register'))
 
-@app.route('/message/delete/reciever', methods=['POST'])
+@app.route('/message/delete/receiver', methods=['POST'])
 def delete_from_recipient():
     try: session['name']
     except KeyError: session['name'] = None
     if session['name'] != None:
-        message_number=request.values.get('message_id')
-        message_to_delete= Message.query.filter_by(id=message_number).first()
-        message_to_delete.reciever_deleted = True
-        db.session.commit()
+        message_id=request.values.get('message_id')
+        message_to_delete= Message.objects(id=message_id, recipient=session['name']).first()
+        message_to_delete.update(receiver_deleted = True)
         if message_to_delete.sender_deleted == True:
-            db.session.delete(message_to_delete)
-            db.session.commit()
+            message_to_delete.delete()
         return redirect(url_for('message'))
     else:
         return redirect(url_for('register'))
@@ -332,13 +308,11 @@ def delete_from_sender():
     try: session['name']
     except KeyError: session['name'] = None
     if session['name'] != None:
-        message_number=request.values.get('message_id')
-        message_to_delete= Message.query.filter_by(id=message_number).first()
-        message_to_delete.sender_deleted = True
-        db.session.commit()
-        if message_to_delete.reciever_deleted == True:
-            db.session.delete(message_to_delete)
-            db.session.commit()
+        message_id=request.values.get('message_id')
+        message_to_delete= Message.objects(id=message_id, sender=session['name']).first()
+        message_to_delete.update(sender_deleted = True)
+        if message_to_delete.receiver_deleted == True:
+            message_to_delete.delete()
         return redirect(url_for('message'))
     else:
         return redirect(url_for('register'))
@@ -350,10 +324,10 @@ def reply():
     if session['name'] != None:
         form=ComposeMessageForm()
         message_number=request.values.get('message_id')
-        try: message_content=Message.query.filter_by(id=message_number)[0]
+        try: message_content=Message.objects(id=message_number).first()
         except IndexError: message_content = None
         is_correspondence=request.values.get('send')
-        message_to_reply_to= Message.query.filter_by(id=message_number).first()
+        message_to_reply_to= Message.objects(id=message_number).first()
         return render_template("messagereply.html", message=message_content, correspondence=is_correspondence, name=session['name'], form=form)
     else:
         return redirect(url_for('register'))
@@ -361,12 +335,12 @@ def reply():
 @app.route("/message/send", methods=['POST'])
 def send():
     send_to=request.values.get('recipient')
-    send_to_user = Inbox.query.filter_by(name=send_to).first()
+    send_to_user = Inbox.objects(name=send_to).first()
     send_from=session['name']
-    send_from_id=Outbox.query.filter_by(name=send_from).first()
+    send_from_id=Outbox.objects(name=send_from).first()
     title=request.values.get('title')
     message_data=request.values.get('message')
-    message_to_send=Message(sender=send_from_id, recipient=send_to_user, title=title, message=message_data,read_yn=False, sender_deleted=False, reciever_deleted=False)
+    message_to_send=Message(sender=send_from_id, recipient=send_to_user, title=title, message=message_data,read_yn=False, sender_deleted=False, receiver_deleted=False)
     db.session.add(message_to_send)
     db.session.commit()
     return redirect(url_for('message'))
@@ -390,10 +364,8 @@ def post_job():
         description = request.values.get('description')
         budget = request.values.get('budget')
         hourlypay = request.values.get('hourlypay')
-        poster = User.query.filter_by(username=session['name']).first()
-        post = JobPost(title=title, description=description, budget=budget, hourlypay=hourlypay, poster=poster)
-        db.session.add(post)
-        db.session.commit()
+        poster = session['name']
+        post = JobPost(title=title, description=description, budget=budget, hourlypay=hourlypay, poster=poster).save()
         return redirect(url_for('index'))
     else:
         return redirect(url_for('register'))
@@ -404,9 +376,8 @@ def delete_job():
     except KeyError: session['name'] = None
     if session['name'] != None:
         job_number=request.values.get('post_number')
-        job_to_delete= JobPost.query.filter_by(id=job_number).first()
-        db.session.delete(job_to_delete)
-        db.session.commit()
+        job_to_delete= JobPost.objects(id=job_number).first()
+        job_to_delete.delete()
         return redirect(url_for('index'))
     else:
         return redirect(url_for('register'))
@@ -414,10 +385,6 @@ def delete_job():
 @app.route("/about")
 def about():
     return render_template("about.html", name=session['name'])
-
-@app.route('/user/<id>')
-def get_user(id):
-    return render_template("user.html", id=id)
 
 @app.route("/contact")
 def contact():
