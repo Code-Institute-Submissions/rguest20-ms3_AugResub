@@ -47,4 +47,11 @@
     </div>
   </div>
 </div>
+<div class="jumbotron results">
+  <ul>
+    {% for result in results %}
+    <li>{{ result.username }}{{ result.title }}</li>
+    {% endfor %}
+  </ul>
+</div>
 {% endblock %}

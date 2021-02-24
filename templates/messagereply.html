@@ -12,7 +12,7 @@
 <div class="jumbotron">
   <div class="message jumbotron">
     <hr>
-    <h2>Previous message - {{ message.sender.name }} to {{ message.recipient.name }}</h2>
+    <h2>Previous message - {{ message.sender }} to {{ message.recipient }}</h2>
     <hr>
     <h3><strong>{{ message.title }}</strong></h3>
     <p>{{ message.message }}</p>
@@ -22,9 +22,9 @@
     <form class="WriteMessage" action="/message/send" method="post">
       {{ form.hidden_tag() }}
       {% if correspondence =="false" %}
-      <input type="text" name="recipient" value="{{ message.sender.name }}" hidden>
+      <input type="text" name="recipient" value="{{ message.sender }}" hidden>
       {% else %}
-      <input type="text" name="recipient" value="{{ message.recipient.name }}" hidden>
+      <input type="text" name="recipient" value="{{ message.recipient }}" hidden>
       {% endif %}
       <label for="title">
         <h3>

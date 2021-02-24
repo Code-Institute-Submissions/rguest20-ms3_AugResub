@@ -324,10 +324,8 @@ def reply():
     if session['name'] != None:
         form=ComposeMessageForm()
         message_number=request.values.get('message_id')
-        try: message_content=Message.objects(id=message_number).first()
-        except IndexError: message_content = None
         is_correspondence=request.values.get('send')
-        message_to_reply_to= Message.objects(id=message_number).first()
+        message_content= Message.objects(id=message_number).first()
         return render_template("messagereply.html", message=message_content, correspondence=is_correspondence, name=session['name'], form=form)
     else:
         return redirect(url_for('register'))
@@ -335,14 +333,10 @@ def reply():
 @app.route("/message/send", methods=['POST'])
 def send():
     send_to=request.values.get('recipient')
-    send_to_user = Inbox.objects(name=send_to).first()
     send_from=session['name']
-    send_from_id=Outbox.objects(name=send_from).first()
     title=request.values.get('title')
     message_data=request.values.get('message')
-    message_to_send=Message(sender=send_from_id, recipient=send_to_user, title=title, message=message_data,read_yn=False, sender_deleted=False, receiver_deleted=False)
-    db.session.add(message_to_send)
-    db.session.commit()
+    message_to_send=Message(sender=send_from, recipient=send_to, title=title, message=message_data,read_yn=False, sender_deleted=False, receiver_deleted=False).save()
     return redirect(url_for('message'))
 
 @app.route("/jobpost", methods=['GET', 'POST'])
@@ -401,6 +395,22 @@ def search():
     freelancerform=FreelancerSearchForm()
     companyform=CompanySearchForm()
     return render_template("search.html", name=session['name'], job=jobform, freelancer=freelancerform, company=companyform)
+
+@app.route("/search/results", methods=['POST'])
+def results():
+    jobform=JobSearchForm()
+    freelancerform=FreelancerSearchForm()
+    companyform=CompanySearchForm()
+    type = request.values.get('type')
+    field = request.values.get('searchfield')
+    term = request.values.get('term')
+    if type == "freelancer":
+        results = User.objects(username__icontains=term, role="freelancer")
+    elif type == "company":
+        results = User.objects(username__icontains=term, role="Company")
+    else:
+        results = JobPost.objects(title__icontains=term)
+    return render_template('searchresults.html', name=session['name'], results=results, job=jobform, freelancer=freelancerform, company=companyform)
 
 @app.errorhandler(404)
 def page_not_found(e):

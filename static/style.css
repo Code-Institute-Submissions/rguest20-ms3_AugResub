@@ -188,6 +188,11 @@ form.form{
   display:inline-block;
 }
 
+.results{
+  position: relative;
+  top: 80vh;
+}
+
 .footer_left{
   align-content: center;
   text-align: center;
