@@ -2,7 +2,7 @@
 from flask import Flask, redirect, url_for, render_template, request, abort, session, flash, jsonify
 from flask_bootstrap import Bootstrap
 from flask_wtf import FlaskForm
-from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
+from wtforms import *
 from wtforms.fields.html5 import DecimalField
 from wtforms.validators import DataRequired, NumberRange
 from flask_mongoengine import MongoEngine
@@ -12,6 +12,12 @@ from datetime import *
 from dateutil.relativedelta import *
 import calendar
 import os
+
+#create multiple checkbox field from wtforms
+class MultiCheckboxField(SelectMultipleField):
+    widget = widgets.ListWidget(prefix_label=False)
+    option_widget = widgets.CheckboxInput()
+
 
 # Configuration
 basedir= os.path.abspath(os.path.dirname(__file__))
@@ -112,9 +118,12 @@ class ComposeMessageForm(FlaskForm):
     message = TextAreaField('Message:', validators=[DataRequired()])
     submit = SubmitField('Submit')
 
-class ChangeUserTypeForm(FlaskForm):
-    new_type=StringField('Change Privileges:', validators=[DataRequired()])
-    submit=SubmitField('Change User Type')
+class UpdateUserForm(FlaskForm):
+    new_type = SelectField('Change Privileges:', choices = [('Freelancer', 'Freelancer'), ('Company', 'Company'), ('Administrator', 'Administrator')], validators=[DataRequired()])
+    languages = MultiCheckboxField('Programming Language:', choices=[('cpp', 'C++'), ('py', 'Python'), ('rb', 'Ruby')])
+    biography = TextAreaField('Bio:')
+    hourlyrate = DecimalField('Hourly Rate:')
+    submit=SubmitField('Update Details')
 
 class JobPostForm(FlaskForm):
     title= StringField('Title:', validators=[DataRequired()])
@@ -151,10 +160,12 @@ def index():
         session['name'] = None
         current_user = None
     form = NameForm()
+    usercount = User.objects(role="Freelancer").count()
+    companycount = User.objects(role="Company").count()
     if session['name'] != None:
         posts = JobPost.objects(poster=session['name'])
     else:
-        posts = []
+        posts = JobPost.objects()
     if form.validate_on_submit():
         user = User.objects(username=form.name.data).first()
         if user == None:
@@ -168,7 +179,7 @@ def index():
                 flash('Password/Username combination incorrect')
         form.name.data = ""
         return redirect(url_for('index'))
-    return render_template('index.html', user=current_user, form=form, name=session.get('name'), known = session.get('known', False), posts=posts)
+    return render_template('index.html', usercount=usercount, companycount=companycount, user=current_user, form=form, name=session.get('name'), known = session.get('known', False), posts=posts)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -201,15 +212,19 @@ def register():
         form = RegisterForm()
         if form.validate_on_submit():
             users = User.objects(username=form.username.data).first()
-            try: user_registered = users[0].username
+            try: user_registered = users.username
             except TypeError: user_registered = None
-            if user_registered == form.username.data:
-                flash("Username already exists")
+            except AttributeError: user_registered = None
+            if form.password.data != form.password2.data:
+                flash ("Password mismatch, please check and try again")
             else:
-                User(username=form.username.data, password_hash=generate_password_hash(form.password.data), role="freelancer", date=datetime.utcnow()).save()
-                session['name']=form.username.data
-                session['known'] = True
-                return redirect(url_for('index'))
+                if user_registered == form.username.data:
+                    flash("Username already exists")
+                else:
+                    User(username=form.username.data, password_hash=generate_password_hash(form.password.data), role="Freelancer", date=datetime.utcnow()).save()
+                    session['name']=form.username.data
+                    session['known'] = True
+                    return redirect(url_for('account'))
         return render_template('register.html', form=form)
     else:
         return redirect(url_for('index'))
@@ -220,10 +235,23 @@ def account():
     except KeyError: session['name'] = None
     if session['name'] != None:
         user=User.objects(username=session['name']).first()
-        form=ChangeUserTypeForm()
+        form=UpdateUserForm()
         if form.validate_on_submit():
+            language = request.form.getlist('languages')
+            languages = []
+            for response in language:
+                if response == "cpp":
+                    languages.append("C++")
+                if response == "py":
+                    languages.append("Python")
+                if response == "rb":
+                    languages.append("Ruby")
             new_role = request.values.get('new_type')
-            user.update(role=new_role)
+            hourlyrate = request.values.get('hourlyrate')
+            bio = request.values.get('biography')
+            user.update(role=new_role, hourly_rate = hourlyrate, languages=languages, bio=bio)
+            flash("Details Updated")
+            return redirect(url_for("account"))
         return render_template('account.html', name=session['name'], form=form, user=user)
     else:
         return redirect(url_for('register'))
@@ -263,6 +291,11 @@ def user_list():
     for user in list:
         message.append(user.username)
     return jsonify(message)
+
+@app.route ('/userdata')
+def user_data():
+    data = User.objects(username = session['name']).first()
+    return jsonify(data)
 
 @app.route('/messages/compose', methods=['POST', 'GET'])
 def compose_message():
@@ -405,12 +438,17 @@ def results():
     field = request.values.get('searchfield')
     term = request.values.get('term')
     if type == "freelancer":
-        results = User.objects(username__icontains=term, role="freelancer")
+        results = User.objects(username__icontains=term, role="Freelancer")
     elif type == "company":
         results = User.objects(username__icontains=term, role="Company")
     else:
         results = JobPost.objects(title__icontains=term)
     return render_template('searchresults.html', name=session['name'], results=results, job=jobform, freelancer=freelancerform, company=companyform)
+
+@app.route("/profile/<username>")
+def profile(username):
+    user = User.objects(username=username).first()
+    return render_template('profile.html', name=session['name'], profile=user)
 
 @app.errorhandler(404)
 def page_not_found(e):

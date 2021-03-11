@@ -8,9 +8,12 @@
     <h3>Register as a new user</h3>
     <form method="POST">
       {{ form.hidden_tag() }}
-      <p>{{ form.username.label }} {{ form.username(id='my-text-field') }}</p>
-      <p>{{ form.password.label }} {{form.password(id="password") }}</p>
-      <p>{{ form.password2.label }} {{form.password2(id="password-two") }}</p>
+      <p>{{ form.username.label }}</p>
+      <p>{{ form.username(id='my-text-field') }}</p>
+      <p>{{ form.password.label }}</p>
+      <p>{{form.password(id="password") }}</p>
+      <p>{{ form.password2.label }}</p>
+      <p>{{form.password2(id="password-two") }}</p>
       {{ form.submit() }}
     </form>
   </div>

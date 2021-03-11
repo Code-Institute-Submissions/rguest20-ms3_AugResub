@@ -18,8 +18,10 @@
         <h3>Job Search</h3>
         <form method="POST" action="/search/results">
           {{ job.hidden_tag() }}
-          <p>{{ job.term.label }} {{ job.term(id='searchterm') }}</p>
-          <p>{{ job.searchfield.label }} {{job.searchfield(id="searchterms") }}</p>
+          <p>{{ job.term.label }} </p>
+          <p>{{ job.term(id='searchterm') }}</p>
+          <p>{{ job.searchfield.label }} </p>
+          <p>{{job.searchfield(id="searchterms") }}</p>
           <input type="text" name="type" value="job" hidden>
           {{ job.submit() }}
         </form>
@@ -28,8 +30,10 @@
         <h3>Freelancer Search</h3>
         <form method="POST" action="/search/results">
           {{ freelancer.hidden_tag() }}
-          <p>{{ freelancer.term.label }} {{ freelancer.term(id='searchterm') }}</p>
-          <p>{{ freelancer.searchfield.label }} {{freelancer.searchfield(id="searchterms") }}</p>
+          <p>{{ freelancer.term.label }} </p>
+          <p>{{ freelancer.term(id='searchterm') }}</p>
+          <p>{{ freelancer.searchfield.label }} </p>
+          <p>{{freelancer.searchfield(id="searchterms") }}</p>
           <input type="text" name="type" value="freelancer" hidden>
           {{ freelancer.submit() }}
         </form>
@@ -38,8 +42,10 @@
         <h3>Company Search</h3>
         <form method="POST" action="/search/results">
           {{ company.hidden_tag() }}
-          <p>{{ company.term.label }} {{ company.term(id='searchterm') }}</p>
-          <p>{{ company.searchfield.label }} {{company.searchfield(id="searchterms") }}</p>
+          <p>{{ company.term.label }} </p>
+          <p>{{ company.term(id='searchterm') }}</p>
+          <p>{{ company.searchfield.label }} </p>
+          <p> {{company.searchfield(id="searchterms") }}</p>
           <input type="text" name="type" value="company" hidden>
           {{ company.submit() }}
         </form>

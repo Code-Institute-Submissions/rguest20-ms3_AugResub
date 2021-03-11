@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 
-{% block title %}About{% endblock %}
+{% block title %}Messages{% endblock %}
 
 {% block page_content %}
 <h1>Messages</h1>
@@ -28,16 +28,16 @@
     {% for message in messages_sent %}
     {% if message.sender_deleted == False %}
     <div class="message jumbotron">
-      <h4>From {{ message.sender }} to {{ message.recipient }}</h4>
+      <h4>From {{ message.sender }} to {{ message.recipient }} - {{ message.date.strftime("%d/%m/%Y") }}</h4>
       <hr>
       <h4><strong>{{ message.title }}</strong></h4>
-      <p>{{ message.message }}</p>
+      <p class="prewrap">{{ message.message }}</p>
       <div class="reply">
-        <form class="" action="/message/delete/sender" method="post">
-          <input type="text" name="message_id" value="{{ message.id }}">
+        <form class="buttonsbottom" action="/message/delete/sender" method="post">
+          <input type="text" name="message_id" value="{{ message.id }}" hidden>
           <button type="submit" name="delete">Delete</button>
         </form>
-        <form class="" action="/message/reply" method="post">
+        <form class="buttonsbottom" action="/message/reply" method="post">
           <input type="text" name="send" value="true" hidden>
           <input type="text" name="message_id" value="{{ message.id }}" hidden>
           <button type="submit" name="button">Continue Correspondence</button>
@@ -56,16 +56,16 @@
     {% for message in messages_received %}
     {% if message.receiver_deleted == False %}
     <div class="message jumbotron">
-      <h4>From {{ message.sender }} to {{ message.recipient }}</h4>
+      <h4>From {{ message.sender }} to {{ message.recipient }} - {{ message.date.strftime("%d/%m/%Y") }}</h4>
       <hr>
       <h4><strong>{{ message.title }}</strong></h4>
-      <p>{{ message.message }}</p>
+      <p class="prewrap">{{ message.message }}</p>
       <div class="reply">
-        <form class="" action="/message/delete/receiver" method="post">
-          <input type="text" name="message_id" value="{{ message.id }}">
+        <form class="buttonsbottom" action="/message/delete/receiver" method="post">
+          <input type="text" name="message_id" value="{{ message.id }}" hidden>
           <button type="submit" name="delete">Delete</button>
         </form>
-        <form class="" action="/message/reply" method="post">
+        <form class="buttonsbottom" action="/message/reply" method="post">
           <input type="text" name="send" value="false" hidden>
           <input type="text" name="message_id" value="{{ message.id }}" hidden>
           <button type="submit" name="button">Reply</button>

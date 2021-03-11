@@ -3,8 +3,13 @@ body{
   font-family: 'Changa', sans-serif;
 }
 
+
 h1{
   padding-top: 5vh;
+}
+
+.jumbotron{
+  background-color: rgba(220, 210, 220, 0.15);
 }
 
 .navbar{
@@ -12,6 +17,11 @@ h1{
     right: 0;
     left: 0;
     z-index: 100;
+
+}
+
+.alert{
+  margin-top: 60px;
 }
 
 
@@ -114,9 +124,14 @@ h1{
 
 .message{
   margin-left: 0 !important;
-  width: 46%;
+  width: 100%;
   display: inline-block;
   margin-right: 3%;
+  overflow: auto;
+}
+
+.w-50{
+  width: 50%;
 }
 
 .container.footer{
@@ -145,7 +160,8 @@ h1{
 }
 
 .login{
-  margin:0 auto;s
+  margin:0 auto;
+  width:50%;
 }
 
 .jobpostjumbo{
@@ -153,7 +169,7 @@ h1{
 }
 
 .jumbotron.message{
-  background-color: rgba(0, 40, 185, 0.5);
+  border: solid 1px #000;
   position: relative;
 }
 
@@ -214,4 +230,44 @@ form.form{
   display: inline-block;
   float: right;
   width: 30%;
+}
+
+.prewrap{
+  white-space: pre-wrap;
+}
+
+.buttonsbottom{
+  display: inline-block;
+}
+
+#searchterm{
+  width:100%;
+}
+
+#languages li{
+  list-style: none;
+}
+
+.page-container{
+  margin-top: 75px;
+}
+
+.under-profile{
+  display: block;
+}
+
+.biography{
+  border: solid 1px #000
+}
+
+.biography h5{
+  text-align: center;
+}
+
+.biography p{
+  white-space: pre-wrap;
+}
+
+.reviews{
+  display: block;
 }

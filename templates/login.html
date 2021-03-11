@@ -8,8 +8,10 @@
     <h3>Please Login To Continue</h3>
     <form method="POST">
       {{ form.hidden_tag() }}
-      <p>{{ form.name.label }} {{ form.name(id='my-text-field') }}</p>
-      <p>{{ form.password.label }} {{form.password(id="text-field-two") }}</p>
+      <p>{{ form.name.label }} </p>
+      <p>{{ form.name(id='my-text-field') }}</p>
+      <p>{{ form.password.label }}</p>
+      <p>{{form.password(id="text-field-two") }}</p>
       {{ form.submit() }}
     </form>
   </div>

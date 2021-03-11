@@ -50,7 +50,7 @@
 <div class="jumbotron results">
   <ul>
     {% for result in results %}
-    <li>{{ result.username }}{{ result.title }}</li>
+    <li><a href="/profile/{{ result.username }}">{{ result.username }}</a>{{ result.title }}</li>
     {% endfor %}
   </ul>
 </div>

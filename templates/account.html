@@ -1,13 +1,48 @@
 {% extends "base.html" %}
 
-{% block title %}User{% endblock %}
+{% block title %}User Details{% endblock %}
 
 {% block page_content %}
-<h1>You are a {{ user.role }} with the username of {{ user.username }}</h1>
-<p>What sort of user are you?</p>
+<h1>{{ user.username }}</h1>
+<h2>{{ user.role }}</h2>
+<h3>Update information</h3>
 <form class="change_user_role" method="post">
   {{ form.hidden_tag() }}
-  {{ form.new_type.label}}{{ form.new_type(id='new_role') }}
-  {{ form.submit }}
+  <p>{{ form.new_type.label }}{{ form.new_type(id='new_role') }}</p>
+  <p>{{ form.languages.label }}{{ form.languages(id='languages') }}</p>
+  <p>{{ form.biography.label }}</p>
+  <p>{{ form.biography(id="bio", rows=8) }}</p>
+  <p>{{ form.hourlyrate.label }} £{{ form.hourlyrate(id="hourlyrate") }}</p>
+  <p>{{ form.submit }}</p>
 </form>
+<script type="text/javascript">
+  async function fetchdata() {
+    try {
+      const response = await fetch(`/userdata`)
+      const list = await response.json()
+      for (i = 0; i < list.languages.length; i++) {
+        if (list.languages[i] === "C++") {
+          x = document.getElementsByName("languages")[0]
+          x.checked = true
+        }
+        if (list.languages[i] === "Python") {
+          x = document.getElementsByName("languages")[1]
+          x.checked = true
+        }
+        if (list.languages[i] === "Ruby") {
+          x = document.getElementsByName("languages")[2]
+          x.checked = true
+        }
+      }
+      bio = document.getElementsByName("biography")[0]
+      bio.value = list.bio
+      hr = document.getElementsByName("hourlyrate")[0]
+      hr.setAttribute('value', list.hourly_rate)
+    } catch (error) {
+      console.error(error)
+    }
+  }
+
+  fetchdata()
+</script>
 {% endblock %}
