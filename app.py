@@ -12,8 +12,8 @@ from datetime import *
 from dateutil.relativedelta import *
 import calendar
 import os
-from dotenv import load_dotenv
-load_dotenv()
+key='MONGO_LOGIN'
+mongologin=os.getenv(key)
 
 #create multiple checkbox field from wtforms
 class MultiCheckboxField(SelectMultipleField):
@@ -26,7 +26,7 @@ basedir= os.path.abspath(os.path.dirname(__file__))
 app = Flask(__name__)
 app.config['MONGODB_SETTINGS']={
     'db': 'freelance',
-    'host': os.environ.get('MONGO_LOGIN'),
+    'host': mongologin,
     'port': 27017,
     'username': 'admin',
     'password': 'Glnayr86'
