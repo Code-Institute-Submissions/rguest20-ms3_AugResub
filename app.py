@@ -122,8 +122,8 @@ class ComposeMessageForm(FlaskForm):
     submit = SubmitField('Submit')
 
 class UpdateUserForm(FlaskForm):
-    new_type = SelectField('Change Privileges:', choices = [('Freelancer', 'Freelancer'), ('Company', 'Company'), ('Administrator', 'Administrator')], validators=[DataRequired()])
-    languages = MultiCheckboxField('Programming Language:', choices=[('cpp', 'C++'), ('py', 'Python'), ('rb', 'Ruby')])
+    new_type = SelectField('Type of User:', choices = [('Freelancer', 'Freelancer'), ('Company', 'Company')], validators=[DataRequired()])
+    languages = MultiCheckboxField('Programming Language/Stack:', choices=[('cpp', 'C++'), ('py', 'Python'), ('rb', 'Ruby'), ('php', 'PHP'),('java', 'Java'),('js', 'Javascript'),('sass', 'Sass')])
     biography = TextAreaField('Bio:')
     hourlyrate = DecimalField('Hourly Rate:')
     submit=SubmitField('Update Details')
@@ -133,6 +133,7 @@ class JobPostForm(FlaskForm):
     description= TextAreaField('Description of Job:', validators=[DataRequired()])
     budget = DecimalField('How much are you looking to spend:')
     hourlypay = DecimalField('How much do you pay per hour:',  validators=[NumberRange(min=0, max=100000, message='bla')])
+    languages = SelectField('What languages/technology do you need principally: ', choices=[('Ruby', 'Ruby'),('Python', 'Python'),('C++', 'C++'),('PHP', 'PHP'),('Javascript', 'Javascript'),('Java', 'Java'),('Sass', 'Sass')])
     submit = SubmitField('Submit')
 
 class JobSearchForm(FlaskForm):
@@ -156,12 +157,6 @@ def make_shell_context():
     return dict(db=db, User=User, Message=Message, JobPost=JobPost)
 
 #Routing
-@app.route("/verify")
-def verify():
-    return (
-    '<p>'+ mongologin +'</p>'
-    )
-
 @app.route("/", methods=['GET', 'POST'])
 def index():
     try: current_user=User.objects(username=session['name']).first()
@@ -171,10 +166,15 @@ def index():
     form = NameForm()
     usercount = User.objects(role="Freelancer").count()
     companycount = User.objects(role="Company").count()
+    interested = []
     if session['name'] != None:
         posts = JobPost.objects(poster=session['name'])
+        for language in current_user.languages:
+            jobs = JobPost.objects(stack=language)
+            interested.append(jobs)
     else:
-        posts = JobPost.objects()
+        posts = JobPost.objects()[:5]
+        interested.append(posts)
     if form.validate_on_submit():
         user = User.objects(username=form.name.data).first()
         if user == None:
@@ -188,7 +188,7 @@ def index():
                 flash('Password/Username combination incorrect')
         form.name.data = ""
         return redirect(url_for('index'))
-    return render_template('index.html', usercount=usercount, companycount=companycount, user=current_user, form=form, name=session.get('name'), known = session.get('known', False), posts=posts)
+    return render_template('index.html', interested=interested[0], usercount=usercount, companycount=companycount, user=current_user, form=form, name=session.get('name'), known = session.get('known', False), posts=posts)
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
@@ -255,6 +255,14 @@ def account():
                     languages.append("Python")
                 if response == "rb":
                     languages.append("Ruby")
+                if response == "php":
+                    languages.append("PHP")
+                if response == "java":
+                    languages.append("Java")
+                if response == "js":
+                    languages.append("Javascript")
+                if response == "sass":
+                    languages.append("Sass")
             new_role = request.values.get('new_type')
             hourlyrate = request.values.get('hourlyrate')
             bio = request.values.get('biography')
@@ -374,12 +382,21 @@ def reply():
 
 @app.route("/message/send", methods=['POST'])
 def send():
-    send_to=request.values.get('recipient')
-    send_from=session['name']
-    title=request.values.get('title')
-    message_data=request.values.get('message')
-    message_to_send=Message(sender=send_from, recipient=send_to, title=title, message=message_data,read_yn=False, sender_deleted=False, receiver_deleted=False).save()
-    return redirect(url_for('message'))
+    if request.values.get('response') == 'true':
+        flash('Message sent - Please respond further in your messages tab')
+        send_to=request.values.get('recipient')
+        send_from=session['name']
+        title=request.values.get('title')
+        message_data=request.values.get('message')
+        message_to_send=Message(sender=send_from, recipient=send_to, title=title, message=message_data,read_yn=False, sender_deleted=False, receiver_deleted=False, date=datetime.utcnow()).save()
+        return redirect(url_for('index'))
+    else:
+        send_to=request.values.get('recipient')
+        send_from=session['name']
+        title=request.values.get('title')
+        message_data=request.values.get('message')
+        message_to_send=Message(sender=send_from, recipient=send_to, title=title, message=message_data,read_yn=False, sender_deleted=False, receiver_deleted=False, date=datetime.utcnow()).save()
+        return redirect(url_for('message'))
 
 @app.route("/jobpost", methods=['GET', 'POST'])
 def post_form():
@@ -400,8 +417,9 @@ def post_job():
         description = request.values.get('description')
         budget = request.values.get('budget')
         hourlypay = request.values.get('hourlypay')
+        stack = request.values.get('languages')
         poster = session['name']
-        post = JobPost(title=title, description=description, budget=budget, hourlypay=hourlypay, poster=poster).save()
+        post = JobPost(title=title, description=description, budget=budget, hourlypay=hourlypay, stack=stack, poster=poster).save()
         return redirect(url_for('index'))
     else:
         return redirect(url_for('register'))
@@ -446,6 +464,11 @@ def interest():
     else:
         return redirect(url_for('register'))
 
+@app.route('/check/<job_id>', methods=['POST'])
+def check(job_id):
+    job = JobPost.objects(pk=job_id).first()
+    return render_template("check.html", name=session['name'], job=job)
+
 @app.route("/about")
 def about():
     return render_template("about.html", name=session['name'])
@@ -486,7 +509,7 @@ def results():
             results = User.objects(username__icontains=term, role="Company")
     else:
         if field == "languagesj":
-            results = JobPost.objects(languages__icontains=term)
+            results = JobPost.objects(stack__icontains=term)
         else:
             results = JobPost.objects(title__icontains=term)
     return render_template('searchresults.html', name=session['name'], results=results, job=jobform, freelancer=freelancerform, company=companyform)
@@ -495,6 +518,10 @@ def results():
 def profile(username):
     user = User.objects(username=username).first()
     return render_template('profile.html', name=session['name'], profile=user)
+
+@app.route("/attributions")
+def attributions():
+    return render_template('attributions.html', name=session['name'])
 
 @app.errorhandler(404)
 def page_not_found(e):
