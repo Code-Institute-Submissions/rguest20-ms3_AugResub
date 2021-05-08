@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Messages{% endblock %}
+
+{% block page_content %}
+<div class="content">
+<h1 hidden>Check responses</h1>
+<div id="jobresponses">
+    <h2>Responses</h2>
+    {% for response in job.response %}
+    <div class="message jumbotron">
+      <h3>{{ response.username }}</h3>
+      <h4><strong>About me/suitability</strong></h4>
+      <p class="prewrap">{{ response.intro }}</p>
+      {% if response.fullbudget %}
+      <p>I can complete this job for {{ response.fullbudget }}</p>
+      {% else %}
+      <p>I charge my time at {{ response.hourlybudget }}</p>
+      {% endif %}
+      <div class="respondform">
+        <h3>Contact Freelancer</h3>
+        <form class="buttonsbottom" action="/message/send" method="post">
+          <input type="text" name="title" value="RE: {{ job.title }} - {{ name }}" hidden>
+          <textarea name="message" rows="8" cols="80"></textarea>
+          <input type="text" name="response" value="true" hidden>
+          <input type="text" name="recipient" value="{{ response.username }}" hidden>
+          <button type="submit" name="button">Enquire Further</button>
+        </form>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  <a href="/">Back</a>
+</div>
+{% endblock %}

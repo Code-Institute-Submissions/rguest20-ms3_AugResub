@@ -89,6 +89,11 @@ h1{
   min-height: 95vh;
 }
 
+.postwrap {
+  width: 80%;
+  margin-left: 10%;
+}
+
 .homepage h3{
   margin-left: 15%
 }

@@ -3,17 +3,19 @@
 {% block title %}User Details{% endblock %}
 
 {% block page_content %}
+<h1 hidden>Job Details</h1>
 <div class="jumbotron">
-
 <div class="aboutjob">
-<h1>{{ job.title }}</h1>
+<h2>{{ job.title }}</h2>
+<p>The main technology required for this job is {{ job.stack }}</p>
+<h3>Description</h3>
 <p>{{ job.description }}</p>
-<p>{{ job.languages }}</p>
+<h3>Budget</h3>
 <p>Estimated budget for this job is:  {% if job.budget %}£{{ job.budget }}{% else %}{{ job.hourlypay }} per hour{% endif %}</p>
 </div>
 <div class="aboutcompany">
   <h2>About {{ poster.username }}</h2>
-  <p>{{ poster.bio }}</p>
+  <p pre>{{ poster.bio }}</p>
 </div>
 <div class="responseform">
   <h2>Interested?</h2>
@@ -24,7 +26,7 @@
     <label for="name">Name: </label>
     <input type="text" name="name" value="{{ name }}" readonly><br>
     <label for="shortintro">Please give an introduction for yourself</label> <br>
-    <textarea name="shortintro" cols="10"></textarea><br>
+    <textarea name="shortintro" cols="10" rows="6"></textarea><br>
     {% if job.hourlypay %}
     <label for="pricehour">What is your price per hour: </label>
     £<input type="number" name="pricehour" value=""> <br>
