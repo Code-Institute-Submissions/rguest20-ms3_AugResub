@@ -12,7 +12,7 @@
   <p>{{ form.languages.label }}{{ form.languages(id='languages') }}</p>
   <p>{{ form.biography.label }}</p>
   <p>{{ form.biography(id="bio", rows=8) }}</p>
-  <p>{{ form.hourlyrate.label }} £{{ form.hourlyrate(id="hourlyrate") }}</p>
+  <p>{{ form.hourlyrate.label }}* £{{ form.hourlyrate(id="hourlyrate") }}</p>
   <p>{{ form.submit }}</p>
 </form>
 <script type="text/javascript">
@@ -20,6 +20,10 @@
     try {
       const response = await fetch(`/userdata`)
       const list = await response.json()
+      if (list.role == "Company"){
+        x = document.querySelector('#new_role')
+        x.value = "Company"
+      }
       for (i = 0; i < list.languages.length; i++) {
         if (list.languages[i] === "C++") {
           x = document.getElementsByName("languages")[0]
@@ -31,6 +35,22 @@
         }
         if (list.languages[i] === "Ruby") {
           x = document.getElementsByName("languages")[2]
+          x.checked = true
+        }
+        if (list.languages[i] === "PHP") {
+          x = document.getElementsByName("languages")[3]
+          x.checked = true
+        }
+        if (list.languages[i] === "Java") {
+          x = document.getElementsByName("languages")[4]
+          x.checked = true
+        }
+        if (list.languages[i] === "Javascript") {
+          x = document.getElementsByName("languages")[5]
+          x.checked = true
+        }
+        if (list.languages[i] === "Sass") {
+          x = document.getElementsByName("languages")[6]
           x.checked = true
         }
       }
