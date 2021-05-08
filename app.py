@@ -12,6 +12,8 @@ from datetime import *
 from dateutil.relativedelta import *
 import calendar
 import os
+from dotenv import load_dotenv
+load_dotenv()
 
 #create multiple checkbox field from wtforms
 class MultiCheckboxField(SelectMultipleField):
@@ -153,6 +155,12 @@ def make_shell_context():
     return dict(db=db, User=User, Message=Message, JobPost=JobPost)
 
 #Routing
+@app.route("/verify")
+def verify():
+    return (
+    '<p>'+ mongologin +'</p>'
+    )
+
 @app.route("/", methods=['GET', 'POST'])
 def index():
     try: current_user=User.objects(username=session['name']).first()
