@@ -50,7 +50,11 @@
 <div class="jumbotron results">
   <ul>
     {% for result in results %}
-    <li><a href="/profile/{{ result.username }}">{{ result.username }}</a>{{ result.title }}</li>
+    {% if result.username %}
+    <li><a href="/profile/{{ result.username }}">{{ result.username }}</a></li>
+    {% else %}
+    <li><a href="/job/{{ result.id }}">{{ result.title }}</a></li>
+    {% endif %}
     {% endfor %}
   </ul>
 </div>

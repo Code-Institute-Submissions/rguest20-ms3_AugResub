@@ -105,6 +105,10 @@ h1{
   margin-left: 10%;
 }
 
+.homepage .jumbotron p {
+    margin-left: 0;
+}
+
 .right_button1{
   position:absolute;
   right: 10px;

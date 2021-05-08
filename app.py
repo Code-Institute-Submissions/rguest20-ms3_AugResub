@@ -12,6 +12,7 @@ from datetime import *
 from dateutil.relativedelta import *
 import calendar
 import os
+from bson.objectid import ObjectId
 from dotenv import load_dotenv
 load_dotenv()
 
@@ -417,6 +418,34 @@ def delete_job():
     else:
         return redirect(url_for('register'))
 
+@app.route("/job/<job_id>")
+def job(job_id):
+    job = JobPost.objects(pk=job_id).first()
+    poster = User.objects(username=job.poster).first()
+    return render_template("job.html", name=session['name'], job=job, poster=poster)
+
+@app.route("/job/interest", methods=['POST'])
+def interest():
+    try: session['name']
+    except KeyError: session['name'] = None
+    if session['name'] != None:
+        job_id = request.values.get('job_id')
+        username = request.values.get('name')
+        shortintro = request.values.get('shortintro')
+        hourlybudget=request.values.get('pricehour')
+        fullbudget = request.values.get('pricejob')
+        jobinterest = {
+        'username' : username,
+        'intro' : shortintro,
+        'hourlybudget' : hourlybudget,
+        'fullbudget' : fullbudget
+        }
+        jobtoappend = JobPost.objects(pk=job_id).first()
+        jobtoappend.update(push__response__0 = jobinterest)
+        return redirect(url_for('index'))
+    else:
+        return redirect(url_for('register'))
+
 @app.route("/about")
 def about():
     return render_template("about.html", name=session['name'])
@@ -446,11 +475,20 @@ def results():
     field = request.values.get('searchfield')
     term = request.values.get('term')
     if type == "freelancer":
-        results = User.objects(username__icontains=term, role="Freelancer")
+        if field == "languagesf":
+            results = User.objects(languages__icontains=term, role="Freelancer")
+        else:
+            results = User.objects(username__icontains=term, role="Freelancer")
     elif type == "company":
-        results = User.objects(username__icontains=term, role="Company")
+        if field == "languagesc":
+            results = User.objects(languages__icontains=term, role="Company")
+        else:
+            results = User.objects(username__icontains=term, role="Company")
     else:
-        results = JobPost.objects(title__icontains=term)
+        if field == "languagesj":
+            results = JobPost.objects(languages__icontains=term)
+        else:
+            results = JobPost.objects(title__icontains=term)
     return render_template('searchresults.html', name=session['name'], results=results, job=jobform, freelancer=freelancerform, company=companyform)
 
 @app.route("/profile/<username>")

@@ -56,7 +56,7 @@
       </form>
       {% for post in posts %}
       <div class="jumbotron message">
-        <h4><strong>{{ post.title }}</strong></h4>
+        <h4><a href="job/{{ post.id }}"><strong>{{ post.title }}</strong></a></h4>
         <p><small>Posted by {{ post.poster }}</small></p>
         <hr>
         <p class="prewrap">{{ post.description }}</p>
@@ -64,7 +64,11 @@
         <p>{% if post.hourlypay %}Hourly rate: £{% endif %}{{ post.hourlypay }}</p>
         <form class="check_respondants" action="jobpost/check" method="post">
           <input type="text" name="post_number" value="{{ post.id }}" hidden>
-          <button class="btn btn-primary" type="submit">Check Responses</button>
+          {% if post.response %}
+          <button class="btn btn-primary" type="submit">Responses : {{ post.response|length }}</button>
+          {% else %}
+          <p>No responses yet</p>
+          {% endif %}
         </form>
         <form class="delete_posting" action="jobpost/delete" method="post">
           <input type="text" name="post_number" value="{{ post.id }}" hidden>
@@ -103,7 +107,7 @@
   <h3>Recent Posts</h3>
   {% for post in posts %}
   <div class="jumbotron message w-50">
-    <h4>{{ post.title }}</h4>
+    <h4><a href="job/{{ post.id }}"><strong>{{ post.title }}</strong></a></h4>
     <hr>
     <p class="prewrap">{{ post.description }}</p>
   </div>

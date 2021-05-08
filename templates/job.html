@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+
+{% block title %}User Details{% endblock %}
+
+{% block page_content %}
+<div class="jumbotron">
+
+<div class="aboutjob">
+<h1>{{ job.title }}</h1>
+<p>{{ job.description }}</p>
+<p>{{ job.languages }}</p>
+<p>Estimated budget for this job is:  {% if job.budget %}£{{ job.budget }}{% else %}{{ job.hourlypay }} per hour{% endif %}</p>
+</div>
+<div class="aboutcompany">
+  <h2>About {{ poster.username }}</h2>
+  <p>{{ poster.bio }}</p>
+</div>
+<div class="responseform">
+  <h2>Interested?</h2>
+  {% if name %}
+  <form class="" action="/job/interest" method="post">
+    <label for="job_id">Job ID: </label>
+    <input type="text" name="job_id" value="{{ job.id }}" readonly><br>
+    <label for="name">Name: </label>
+    <input type="text" name="name" value="{{ name }}" readonly><br>
+    <label for="shortintro">Please give an introduction for yourself</label> <br>
+    <textarea name="shortintro" cols="10"></textarea><br>
+    {% if job.hourlypay %}
+    <label for="pricehour">What is your price per hour: </label>
+    £<input type="number" name="pricehour" value=""> <br>
+    {% else %}
+    <label for="pricejob">What is your estimated price for the complete job: </label>
+    £<input type="number" name="pricejob" value=""> <br>
+    {% endif %}
+    <button type="submit" name="button">Respond to Posting</button>
+  </form>
+  {% else %}
+  <p>To respond to this job posting, please <a href="/register">register</a></p>
+  {% endif %}
+</div>
+</div>
+{% endblock %}
