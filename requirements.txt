@@ -9,4 +9,4 @@ Flask-Admin==1.4.0
 Flask-Redis==0.1.0
 datetime
 dnspython
-dotenv
+python-dotenv
