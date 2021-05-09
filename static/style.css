@@ -8,6 +8,14 @@ h1{
   padding-top: 5vh;
 }
 
+input {
+  padding-left: 10px;
+}
+
+textarea {
+  padding-left: 7px;
+}
+
 .jumbotron{
   background-color: rgba(220, 210, 220, 0.15);
 }
@@ -158,28 +166,52 @@ h1{
 }
 
 .vertical-center {
-  position: absolute;
+  position: relative;
   left:0;
   right:0;
-  min-height: 100%;  /* Fallback for browsers do NOT support vh unit */
-  min-height: 100vh; /* These two lines are counted as one :-)       */
   width:100%;
-  display: flex;
+  padding-top: 10%;
   align-items: center;
+  display:grid;
+  grid-template-rows: auto 1fr;
+  grid-gap: 20px;
 }
 
 .login{
   margin:0 auto;
-  width:50%;
+  width:80%;
+}
+
+.login form input {
+  width: 90%;
+}
+
+.login form input[type=submit]{
+  width:auto;
 }
 
 .jobpostjumbo{
   margin-top: 20px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
 }
-
+.postwrap {
+  display:grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
 .jumbotron.message{
   border: solid 1px #000;
   position: relative;
+}
+
+#message{
+  height: 200px;
+}
+
+.jumbotron ul{
+padding-right: 40px;
 }
 
 .reply{
@@ -213,9 +245,23 @@ form.form{
   display:inline-block;
 }
 
+#searchterm {
+padding-left: 10px;}
+
 .results{
-  position: relative;
-  top: 80vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  grid-gap: 20px;
+}
+
+.result{
+  background-color: rgba(255, 255, 255, 0.8);
+  border: solid 1px black;
+}
+
+.result a {
+  font-size: 2rem;
+  font-weight: bold;
 }
 
 .footer_left{
@@ -277,6 +323,56 @@ form.form{
   white-space: pre-wrap;
 }
 
+.aboutcompany p{
+  white-space: pre-wrap;
+}
+
+.aboutcompany h2 {
+  position: relative;
+  top: 50px;
+}
+
 .reviews{
   display: block;
+}
+@media screen and (max-width: 800px) {
+  .postwrap {
+    grid-template-columns: 1fr;
+  }
+
+  .login {
+    margin: 0;
+    width: 100%;
+  }
+
+  .results {
+    grid-template-columns: 1fr;
+  }
+
+  .jobpostjumbo{
+    grid-template-columns: 1fr;
+  }
+  .right_button1{
+    position: absolute;
+    bottom:0;
+    right:0;
+  }
+
+  .right_button1 button{
+    position: absolute;
+    bottom:0;
+    right:0;
+  }
+
+  .right_button2{
+    position: absolute;
+    bottom:0;
+    left:0;
+  }
+
+  .right_button2 button{
+    position: absolute;
+    bottom:0;
+    left:0;
+  }
 }

@@ -28,10 +28,10 @@
     <label for="shortintro">Please give an introduction for yourself</label> <br>
     <textarea name="shortintro" cols="10" rows="6"></textarea><br>
     {% if job.hourlypay %}
-    <label for="pricehour">What is your price per hour: </label>
+    <label for="pricehour">What is your price per hour: </label><br>
     £<input type="number" name="pricehour" value=""> <br>
     {% else %}
-    <label for="pricejob">What is your estimated price for the complete job: </label>
+    <label for="pricejob">What is your estimated price for the complete job: </label><br>
     £<input type="number" name="pricejob" value=""> <br>
     {% endif %}
     <button type="submit" name="button">Respond to Posting</button>

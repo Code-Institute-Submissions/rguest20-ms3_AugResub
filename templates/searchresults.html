@@ -46,16 +46,27 @@
       </div>
     </div>
   </div>
+  <div class="jumbotron results">
+    <ul>
+      {% for result in results %}
+      <div class="result jumbotron">
+      {% if result.username %}
+        <p><a href="/profile/{{ result.username }}">{{ result.username }} - {{ result.role }}</a></p>
+        <p>Languages:</p>
+        <ul>
+          {% for language in result.languages %}
+          <li>{{ language }}</li>
+          {% endfor %}
+        </ul>
+      {% else %}
+        <a href="/job/{{ result.id }}">{{ result.title }}</a>
+        <p>{{ result.description }}</p>
+        <p>Budget: £{% if result.hourlypay %}{{result.hourlypay}}{% else %}{{ result.budget }}{% endif %}</p>
+      {% endif %}
+      {% endfor %}
+    </div>
+    </ul>
+  </div>
 </div>
-<div class="jumbotron results">
-  <ul>
-    {% for result in results %}
-    {% if result.username %}
-    <li><a href="/profile/{{ result.username }}">{{ result.username }}</a></li>
-    {% else %}
-    <li><a href="/job/{{ result.id }}">{{ result.title }}</a></li>
-    {% endif %}
-    {% endfor %}
-  </ul>
-</div>
+
 {% endblock %}
