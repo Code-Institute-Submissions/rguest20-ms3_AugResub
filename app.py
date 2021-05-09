@@ -125,7 +125,7 @@ class UpdateUserForm(FlaskForm):
     new_type = SelectField('Type of User:', choices = [('Freelancer', 'Freelancer'), ('Company', 'Company')], validators=[DataRequired()])
     languages = MultiCheckboxField('Programming Language/Stack:', choices=[('cpp', 'C++'), ('py', 'Python'), ('rb', 'Ruby'), ('php', 'PHP'),('java', 'Java'),('js', 'Javascript'),('sass', 'Sass')])
     biography = TextAreaField('Bio:')
-    hourlyrate = DecimalField('Hourly Rate:')
+    hourlyrate = DecimalField('Hourly Rate:', validators=[DataRequired()])
     submit=SubmitField('Update Details')
 
 class JobPostForm(FlaskForm):
