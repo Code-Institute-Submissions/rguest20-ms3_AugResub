@@ -138,7 +138,6 @@ class test_app(unittest.TestCase):
 
     def testPasswordHashing(self):
         current_user = User.objects(username='test').first()
-        print ("secret key is" + app.config['SECRET_KEY'])
         self.assertTrue(current_user.verify_password('test'))
 
 if __name__ == '__main__':
