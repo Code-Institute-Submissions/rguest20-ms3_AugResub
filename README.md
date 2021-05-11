@@ -148,6 +148,7 @@ If companies or freelancers wish to know more about each other then they can vis
 To make the design more user friendly I have done the following:
 
 - To ensure that accessibility is not an issue for colorblind people, I have tested the website using the toptal.com colorblind site checker in achromatopsia setting that renders the page in greyscale.  All links and CTAs were still visible.
+![Toptal Check](static/images/toptal.png "Toptal Check")
 - CTAs and links are made obvious by keeping them in the blue that people expect a link to be in.  Generally, where it looked right, I have also made the text bold to show that it is clickable.
 - Colour contrast was checked to ensure readibility
 - All buttons are clickable and take you to the expected area of the site.
