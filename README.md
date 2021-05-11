@@ -54,6 +54,7 @@
 - There is a visible change for companies when developers respond to a job listing.  This allows them to quickly identify when a response has been made and see if they are interested in the developer.
 
 **Entity Relationships**
+
 There are many interconnected parts of the database.  These have been kept non-relational to abide by the coursework criteria:
 
 ![Entity Relationship](static/images/entityrelationship.png "Flowchart")
