@@ -56,6 +56,8 @@
 **Entity Relationships**
 There are many interconnected parts of the database.  These have been kept non-relational to abide by the coursework criteria:
 
+![Entity Relationship](static/images/entityrelationship.png "Flowchart")
+
 **Preliminary Designs**
 These can be found [here](wireframes.zip "Project Freelance Wireframes")
 
