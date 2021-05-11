@@ -80,13 +80,13 @@ textarea {
 }
 
 #hero{
-  height: 50vh%;
+  height: 50vh;
   width:100%;
   position: relative;
   z-index: -10;
 }
 
-.homepage{
+.homepage {
   position: absolute;
   top: 70vh;
   background-color: white;
