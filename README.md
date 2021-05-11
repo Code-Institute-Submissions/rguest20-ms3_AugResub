@@ -116,22 +116,30 @@ Extension modules
 **How to use**
 
 **Home Page**
+![Home Page](static/images/home.png "Home Page")
 This page is a hub allowing you access to the features of the site.  A basic description is given below along with some taster CTA boxes showing jobs that are available.  Upon login, this page will alter depending on the type of user that is present.  At the head of the page are several links that allow the user to navigate the site.
 
 **Search page**
-
+![Search Page](static/images/search.png "Search Page")
+By selecting the tab and the dropdown, you can search either companies, freelancers or job posts.  If searching companies or job posts, a helpful box will give you a list of available names once 3 letters have been typed in.
 
 **Message page**
-
+![Message Page](static/images/messages.png "Message Page")
+By selecting the correct tab, you can filter by your sent or recieved messages.  Clicking the buttons on any of these will allow you to continue the conversation or delete the message.
 
 **Account page**
-
+![Account Page](static/images/account.png "Account Page")
+These options will help personalise your experience of the site.  Based on the jobs selected and type of user, different content will be presented.
+The hourly rate is so users and companies can best match each other and create a competitive market.
 
 **Job page**
-
+![Job Post Page](static/images/jobpost.png "Job Post Page")
+![Job Response Page](static/images/jobresponse.png "Job Response Page")
+Both of these pages show how jobs are dealt with by the system.  Posts allow companies to show what they are looking for and what they are offering.  The response allows counter offers to be made and allows the freelancer to undercut their competition by offering their services at a lower rate.  
 
 **Profile page**
-
+![Profile Page](static/images/profile.png "Profile Page")
+If companies or freelancers wish to know more about each other then they can visit each others profile pages and get a feel for who they may be going into business with.  At a later date, I am looking to add the ability for freelancers to have links to their work so that they can showcase for companies what they are capable of.
 
 **UX design**
 
@@ -139,8 +147,28 @@ To make the design more user friendly I have done the following:
 
 - To ensure that accessibility is not an issue for colorblind people, I have tested the website using the toptal.com colorblind site checker in achromatopsia setting that renders the page in greyscale.  All links and CTAs were still visible.
 - CTAs and links are made obvious by keeping them in the blue that people expect a link to be in.  Generally, where it looked right, I have also made the text bold to show that it is clickable.
+- Colour contrast was checked to ensure readibility
+- All buttons are clickable and take you to the expected area of the site.
+- Any required form sections will flag if not filled in.
 
-**Deployment**
+# **Testing**
+
+**W3C Validator**
+
+- HTML
+![Screenshot of html test](static/images/html_check.png "HTML Check")
+Only one warning shown that cannot be amended as it is set by flask_bootstrap.
+
+- CSS
+![Screenshot of css test](static/images/css_check.png "CSS Check")
+One error detected in bootstrap module.  No errors in my CSS
+
+**Unit Testing - Database**
+
+![Screenshot of unit test](static/images/unittest.png "Unit Test")
+The database was tested to ensure that required functionality was present. All tests pass.
+
+# **Deployment**
 
 **Do Not Deploy To GitHub Pages – Python does not work on GitHub Pages**
 
@@ -215,6 +243,6 @@ The project was deployed to Heroku using the following steps...
 
 **Known issues/extensions to be added**
 
-- Tutorial incomplete - skipped currently
-- Text at the bottom of page does not update to create a story-like atmosphere
-- Currently only one abductor is available. More to be added later
+- Admin area to be added at a later date, allowing refreshing of passwords and removal of troublesome users.
+- Links for companies/freelancer on profile page to be added
+- Avatars on profile page to be added
