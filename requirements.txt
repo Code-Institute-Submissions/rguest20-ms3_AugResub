@@ -11,3 +11,4 @@ datetime
 dnspython
 pymongo
 python-dotenv
+gunicorn
