@@ -114,6 +114,9 @@ Extension modules
 - dnspython
 - python-dotenv (for storing secrets)
 
+Production module
+gunicorn
+
 - (flask_sqlalchemy and flask_migrate are included in the requirements but is deprecated)
 
 **How to use**
@@ -210,6 +213,7 @@ $ git clone https://github.com/YOUR-USERNAME/YOUR-REPOSITORY
 \> Unpacking objects: 100% (10/10), done.
 
 **Heroku Hosted App**
+**Development**
 
 The project was deployed to Heroku using the following steps...
 
@@ -223,7 +227,16 @@ The project was deployed to Heroku using the following steps...
 - FLASK_APP: app.py
 - FLASK_CONIFG: heroku
 6. Check that the build has occurred as expected.
-7. Enjoy your shiny new app.
+7. Enjoy your shiny new app, make any changes that are required whilst on a dev server.
+
+**Production**
+
+1. When ready to enter production, we are going to create app_wsgi.py and edit it so that it now says:
+`if __name__=="__main__":
+  app.run()`
+2. Alter the procfile so that it now says `web: gunicorn app_wsgi:app`
+3. Create a runtime.txt and specify the version of python that you are running with `python-3.9.5`
+4. Push to GitHub and let heroku build the app.  This will now be a production server without a debug mode.
 
 **Credits**
 
