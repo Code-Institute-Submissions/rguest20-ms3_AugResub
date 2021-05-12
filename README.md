@@ -163,7 +163,7 @@ To make the design more user friendly I have done the following:
 - All buttons are clickable and take you to the expected area of the site.
 - Any required form sections will flag if not filled in.
 - If a person is not logged in, they will be redirected to the register page if they attempt to access any area that they should not.  
-- Potentially more vital parts of the site will only accept POST requests.  This makes it difficult for someone to accidentally cause damage to the database. 
+- Potentially more vital parts of the site will only accept POST requests.  This makes it difficult for someone to accidentally cause damage to the database.
 
 # **Testing**
 
@@ -171,7 +171,7 @@ To make the design more user friendly I have done the following:
 
 - HTML
 ![Screenshot of html test](static/images/html_check.png "HTML Check")
-Only one warning shown that cannot be amended as it is set by flask_bootstrap.
+Only one warning that was resolved by setting a content-language meta tag.  This gets around the fact that flask_bootstrap does not have a lang set in the HTML tag
 
 - CSS
 ![Screenshot of css test](static/images/css_check.png "CSS Check")
