@@ -24,6 +24,11 @@
 - No Lorem ipsum text.
 - Ensure this is fully documented and commented to be clear to any developer reading through.
 
+**What I will build**
+To ensure that I hit these targets, I intend to build a freelancing website which will allow freelancers and companies to connect.  Inter personal messaging as well as job creation will be functional parts of the site.
+
+Users will be able to use this site to gain meaningful employment and potentially use the backend of the site to build a paid platform by which they could act as an agency.
+
 **User stories**
 
 **First Time Users**
@@ -157,6 +162,8 @@ To make the design more user friendly I have done the following:
 - Colour contrast was checked to ensure readibility
 - All buttons are clickable and take you to the expected area of the site.
 - Any required form sections will flag if not filled in.
+- If a person is not logged in, they will be redirected to the register page if they attempt to access any area that they should not.  
+- Potentially more vital parts of the site will only accept POST requests.  This makes it difficult for someone to accidentally cause damage to the database. 
 
 # **Testing**
 
