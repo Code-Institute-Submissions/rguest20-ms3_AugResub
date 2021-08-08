@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block page_content %}
+<h1>Messages</h1>
+<h3>Sent</h3>
+<div class="jumbotron">
+  {% for message in user.messages %}
+  <div class="message jumbotron">
+    <h4>From {{ message.sender.id }} - {{ message.sender.username }} to {{ message.recipient }}</h4>
+    <h4>{{ message.title }}</h4>
+    <p>{{ message.message }}</p>
+  </div>
+  <p> </p>
+  {% endfor %}
+  <h3>Send a new message</h3>
+  <form class="message_compose" action="/messages/compose" method="post">
+    <button type="submit" name="compose">Compose</button>
+  </form>
+</div>
+{% endblock %}
