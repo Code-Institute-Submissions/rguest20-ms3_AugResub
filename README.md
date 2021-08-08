@@ -275,3 +275,4 @@ The project was deployed to Heroku using the following steps...
 
 - Debug mode has been turned off - ready for production.
 - Git Filter-Repo has been used to excise a git issue where a secret was available on historic Git Commits.
+- larger commits have been split down by individual files, using the shell script included with this update
