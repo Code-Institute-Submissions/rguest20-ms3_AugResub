@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+
+{% block title %}About{% endblock %}
+
+{% block page_content %}
+<h1>Messages</h1>
+<h3>Sent</h3>
+<div class="jumbotron">
+  {% for message in user.messages %}
+  <div class="message jumbotron">
+    <form class="WriteMessage" action="postmessage.html" method="post">
+      {{ form.hidden_tag() }}
+      <p>{{ form.send_to.label }} {{ form.send_to(id='send_to') }}</p>
+      <p>{{ form.title.label }} {{form.title(id="title") }}</p>
+      <p>{{ form.message.label }} {{form.message(id="message") }}</p>
+      {{ form.submit() }}
+    </form>
+  </div>
+  <p> </p>
+  {% endfor %}
+</div>
+{% endblock %}
