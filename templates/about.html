@@ -1,20 +1,12 @@
-<!DOCTYPE html>
-<html lang="en" dir="ltr">
+{% extends "base.html" %}
 
-<head>
-  <meta charset="utf-8">
-  <title>Hello Flask</title>
-</head>
+{% block title %}About{% endblock %}
 
-<body>
-  <nav>
-    <ul>
-      <li><a href="{{ url_for('index') }}">Home</a></li>
-      <li><a href="{{ url_for('about') }}">About</a></li>
-      <li><a href="{{ url_for('contact') }}">Contact</a></li>
-    </ul>
-  </nav>
-  <h1>About</h1>
-</body>
-
-</html>
+{% block page_content %}
+<h1>About/FAQ</h1>
+<h3>Our Vision</h3>
+<p>It has become more and more apparent that breaking into the world of coding requires some time working freelance. Other websites out there will gladly charge you a pretty penny for the job of connecting with people who need some freelance coding
+  done. At Project FREElance, we find this sort of greed distasteful and so create an open free marketplace for you to connect, communicate and create. We will never charge you to send a message, nor will we charge to get details.</p>
+<h3>But how will you keep going? What keeps the lights on?</h3>
+<p>A valid point. Goodwill doesn't pay the rent. You may from time to time see adverts to cover the cost, but your data is sacrosanct to us. We will not sell your details on, it's just unethical.
+  {% endblock %}
