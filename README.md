@@ -270,3 +270,8 @@ The project was deployed to Heroku using the following steps...
 - Admin area to be added at a later date, allowing refreshing of passwords and removal of troublesome users.
 - Links for companies/freelancer on profile page to be added
 - Avatars on profile page to be added
+
+# **Updates for Resubmission**
+
+- Debug mode has been turned off - ready for production.
+- Git Filter-Repo has been used to excise a git issue where a secret was available on historic Git Commits.
